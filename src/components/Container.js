@@ -1,10 +1,11 @@
 import styles from "../styles/Container.module.scss";
 import Post from "./Post";
 import { useCallback, useEffect, useState } from "react";
+import Skeleton from "./Skeleton";
 
 const infinite = Array.from({ length: 200 }, (v, i) => i);
 
-const Container = () => {
+const Container = (props) => {
   const [slicePoint, setSlicePoint] = useState(20);
 
   const scroll = useCallback(() => {
@@ -23,12 +24,15 @@ const Container = () => {
     if (slicePoint > 199) return;
     scroll();
   }, [slicePoint, scroll]);
-
   return (
     <div className={styles.container}>
-      {infinite.slice(0, slicePoint).map((el, i) => {
-        return <Post index={i} />;
-      })}
+      {props.isLoading
+        ? new Array(20).fill(1).map((el, i) => {
+            return <Skeleton key={i} />;
+          })
+        : infinite.slice(0, slicePoint).map((el, i) => {
+            return <Post index={i} />;
+          })}
     </div>
   );
 };
